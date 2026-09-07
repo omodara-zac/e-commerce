@@ -1,0 +1,116 @@
+<!-- Cart button -->
+<button id="cart-btn" class="btn btn-primary cart-btn">
+    <i class="bi bi-cart3" style="font-size: 35px;"></i>
+
+    <span class="cart-count">
+        <%= cartItems.length %>
+    </span>
+</button>
+
+
+<!-- Cart sidebar -->
+<div class="cart-container" id="cart">
+
+    <button id="close-cart" class="btn btn-danger" type="button">
+        ×
+    </button>
+
+    <h2 class="your-cart">Your Cart</h2>
+
+
+    <div id="cart-items">
+    <% cartItems.forEach(item => { %>
+
+        <div class="cart-item" data-cart-id="<%= item.id %>">
+
+            <img src="<%= item.image_url %>" alt="<%= item.name %>">
+
+            <div>
+                <h5>
+                    <%= item.name %>
+                </h5>
+
+                <p>Size: <%= item.size %></p>
+
+                <p>Quantity: <%= item.quantity %></p>
+
+
+                <!-- Price + Delete icon -->
+                <div class="price-delete">
+
+                    <p>₦<%= item.price * item.quantity %></p>
+
+                    <!-- <form action="/cart/delete" method="POST"> -->
+                    <form class="delete-cart-form" data-url="/cart/delete">
+
+                        <input
+                            type="hidden"
+                            name="cart_id"
+                            value="<%= item.id %>"
+                        >
+
+                        <button
+                            type="submit"
+                            class="delete-cart-btn"
+                            title="Remove from cart"
+                        >
+                            <i class="bi bi-trash3"></i>
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    <% }) %>
+
+    <p id="empty-cart-message" <%= cartItems.length ? 'hidden' : '' %>>Your cart is empty.</p>
+    </div>
+
+
+    <!-- Checkout button -->
+    <button type="button" class="checkout-btn">
+       <a href="/checkout" style="text-decoration: none; color: white;">Checkout</a>
+    </button>
+
+</div>
+
+
+<script>
+    const cartBtn = document.getElementById("cart-btn");
+    const closeCart = document.getElementById("close-cart");
+    const cart = document.getElementById("cart");
+
+    cartBtn.addEventListener("click", () => {
+        cart.style.display = "flex";
+        cartBtn.style.display = "none";
+    });
+
+    closeCart.addEventListener("click", () => {
+        cart.style.display = "none";
+        cartBtn.style.display = "block";
+    });
+
+    document.addEventListener("submit", async (event) => {
+        const form = event.target.closest(".delete-cart-form");
+        if (!form) return;
+
+        event.preventDefault();
+        const response = await fetch(form.dataset.url, {
+            method: "POST",
+            body: new URLSearchParams(new FormData(form))
+        });
+
+        if (!response.ok) return;
+
+        const { deletedCartId } = await response.json();
+        document.querySelector(`[data-cart-id="${deletedCartId}"]`)?.remove();
+        const cartCount = document.querySelector(".cart-count");
+        cartCount.textContent = Math.max(0, Number(cartCount.textContent) - 1);
+        document.getElementById("empty-cart-message").hidden =
+            document.querySelectorAll("#cart-items .cart-item").length > 0;
+    });
+</script>

@@ -1,0 +1,31 @@
+<nav class="navbar">
+
+    <!-- Logo -->
+    <a href="/" class="navbar-logo">
+        e-boutique
+    </a>
+
+    <!-- Auth buttons -->
+    <div class="auth-buttons">
+
+        <% if (isAuthenticated) { %>
+
+            <a href="/logout" class="login-btn">
+                Logout
+            </a>
+
+        <% } else { %>
+
+            <a href="/register" class="register-btn">
+                Register
+            </a>
+
+            <a href="/login" class="login-btn">
+                Login
+            </a>
+
+        <% } %>
+
+    </div>
+
+</nav>

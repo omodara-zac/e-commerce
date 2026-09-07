@@ -1,0 +1,23 @@
+git rm -r --cached node_modules# Node 
+node_modules/ 
+npm-debug.log* 
+yarn-debug.log* 
+yarn-error.log* 
+ 
+# Environment variables / secrets 
+.env 
+.env.* 
+!.env.example 
+ 
+# PostgreSQL / local database files 
+*.sql 
+*.dump 
+*.backup 
+ 
+# OS files 
+.DS_Store 
+Thumbs.db 
+ 
+# IDE 
+.vscode/ 
+.idea/ this is in my gitignore

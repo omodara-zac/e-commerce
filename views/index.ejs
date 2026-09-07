@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <title>Document</title>
+
+</head>
+
+<body>
+
+    <%- include('partials/header') %>
+
+        <%- include('partials/cart') %>
+
+
+            <div class="products-container">
+
+                <% products.forEach(product=> { %>
+
+                    <div class="card product-card">
+
+                        <img src="<%= product.image_url %>" class="card-img-top product-image"
+                            alt="<%= product.name %>">
+
+                        <div class="card-body">
+
+                            <h5 class="card-title">
+                                <%= product.name %>
+                            </h5>
+
+                            <p class="card-text">
+                                ₦<%= product.price %>
+                            </p>
+
+                            <!-- Size -->
+                            <!-- <form action="/cart" method="POST"> -->
+                            <form class="add-to-cart-form" data-url="/cart">
+
+                                <!-- Product ID -->
+                                <input type="hidden" name="product_id" value="<%= product.id %>">
+
+                                <!-- Size -->
+                                <select class="form-select mb-3" name="size" required>
+                                    <option value="" selected disabled>Select Size</option>
+                                    <option value="S">Small</option>
+                                    <option value="M">Medium</option>
+                                    <option value="L">Large</option>
+                                    <option value="XL">Extra Large</option>
+                                </select>
+
+                                <!-- Quantity -->
+                                <div class="input-group mb-3">
+
+                                    <button class="btn btn-outline-secondary decrease-btn" type="button">
+                                        −
+                                    </button>
+
+                                    <input type="text" class="form-control text-center quantity-input" name="quantity"
+                                        value="1" readonly>
+
+                                    <button class="btn btn-outline-secondary increase-btn" type="button">
+                                        +
+                                    </button>
+
+                                </div>
+
+                                <!-- Add to Cart -->
+                                <button type="submit" class="btn btn-primary" id="add-to-cart">
+                                    Add to Cart
+                                </button>
+
+                            </form>
+                        </div>
+
+                    </div>
+
+                    <% }) %>
+
+            </div>
+
+            <div id="cart-toast" class="cart-toast" role="status" aria-live="polite" aria-atomic="true">
+                <i class="bi bi-check2-circle" aria-hidden="true"></i>
+                Added to cart
+            </div>
+
+
+
+            <script>
+
+                const cartToast = document.getElementById("cart-toast");
+                let cartToastTimeout;
+
+                function showCartToast() {
+                    clearTimeout(cartToastTimeout);
+                    cartToast.classList.add("is-visible");
+                    cartToastTimeout = setTimeout(() => {
+                        cartToast.classList.remove("is-visible");
+                    }, 2600);
+                }
+
+                document.querySelectorAll(".increase-btn").forEach(button => {
+
+                    button.addEventListener("click", () => {
+
+                        const input = button.parentElement.querySelector(".quantity-input");
+
+                        let quantity = Number(input.value);
+
+                        input.value = quantity + 1;
+
+                    });
+
+                });
+
+
+                document.querySelectorAll(".decrease-btn").forEach(button => {
+
+                    button.addEventListener("click", () => {
+
+                        const input = button.parentElement.querySelector(".quantity-input");
+
+                        let quantity = Number(input.value);
+
+                        if (quantity > 1) {
+                            input.value = quantity - 1;
+                        }
+
+                    });
+
+                });
+
+                document.querySelectorAll(".add-to-cart-form").forEach(form => {
+                    form.addEventListener("submit", async (event) => {
+                        event.preventDefault();
+
+                        const response = await fetch(form.dataset.url, {
+                            method: "POST",
+                            body: new URLSearchParams(new FormData(form))
+                        });
+
+                        if (!response.ok) return;
+
+                        const { cartItem } = await response.json();
+                        const card = form.closest(".product-card");
+                        const cartItems = document.getElementById("cart-items");
+                        const cartCount = document.querySelector(".cart-count");
+                        const productName = card.querySelector(".card-title").textContent.trim();
+                        const productImage = card.querySelector(".product-image").src;
+                        const productPrice = card.querySelector(".card-text").textContent.trim();
+                        const currency = productPrice.replace(/[\d,.\s]/g, "");
+                        const unitPrice = Number(productPrice.replace(/[^\d.]/g, ""));
+                        const totalPrice = unitPrice * Number(cartItem.quantity);
+
+                        const item = document.createElement("div");
+                        item.className = "cart-item";
+                        item.dataset.cartId = cartItem.id;
+                        item.innerHTML = `<img src="${productImage}" alt=""><div><h5></h5><p></p><p></p><div class="price-delete"><p></p><form class="delete-cart-form" data-url="/cart/delete"><input type="hidden" name="cart_id"><button type="submit" class="delete-cart-btn" title="Remove from cart"><i class="bi bi-trash3"></i></button></form></div></div>`;
+                        item.querySelector("h5").textContent = productName;
+                        item.querySelectorAll("p")[0].textContent = `Size: ${cartItem.size}`;
+                        item.querySelectorAll("p")[1].textContent = `Quantity: ${cartItem.quantity}`;
+                        item.querySelectorAll("p")[2].textContent = `${currency}${totalPrice.toLocaleString()}`;
+                        item.querySelector("input[name='cart_id']").value = cartItem.id;
+                        cartItems.appendChild(item);
+                        cartCount.textContent = Number(cartCount.textContent) + 1;
+                        document.getElementById("empty-cart-message").hidden = true;
+                        showCartToast();
+                    });
+                });
+
+            </script>
+
+</body>
+
+</html>

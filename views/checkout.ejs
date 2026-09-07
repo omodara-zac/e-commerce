@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Complete your e-boutique order.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/style.css">
+    <title>Checkout | e-boutique</title>
+</head>
+<body class="checkout-page">
+    <main class="checkout-layout">
+        <section class="checkout-intro" aria-labelledby="checkout-page-title">
+            <a class="checkout-back" href="/" aria-label="Return to shopping">← Continue shopping</a>
+            <p class="checkout-eyebrow">SECURE CHECKOUT</p>
+            <h1 id="checkout-page-title">Almost yours.</h1>
+            <p>Enter your delivery details and choose a payment method to place your order.</p>
+        </section>
+
+        <section class="checkout-card" aria-labelledby="checkout-title">
+            <div class="checkout-card-heading">
+                <p class="checkout-kicker">COMPLETE YOUR ORDER</p>
+                <h2 id="checkout-title">Delivery &amp; payment</h2>
+                <p>All fields marked with an asterisk are required.</p>
+            </div>
+
+            <form action="/checkout" method="POST" class="checkout-form">
+                <div class="checkout-field checkout-field--wide"><label for="name">Full name <span aria-hidden="true">*</span></label><input type="text" id="name" name="name" autocomplete="name" placeholder="Enter your full name" required></div>
+                <div class="checkout-field checkout-field--wide"><label for="email">Email address <span aria-hidden="true">*</span></label><input type="email" id="email" name="email" autocomplete="email" placeholder="you@example.com" required></div>
+                <div class="checkout-field checkout-field--wide"><label for="phone">Phone number <span aria-hidden="true">*</span></label><input type="tel" id="phone" name="phone" autocomplete="tel" placeholder="e.g. 080 1234 5678" required></div>
+                <div class="checkout-field checkout-field--wide"><label for="address">Delivery address <span aria-hidden="true">*</span></label><textarea id="address" name="address" autocomplete="street-address" rows="3" placeholder="House number, street, and area" required></textarea></div>
+                <div class="checkout-field"><label for="city">City <span aria-hidden="true">*</span></label><input type="text" id="city" name="city" autocomplete="address-level2" placeholder="Your city" required></div>
+                <div class="checkout-field"><label for="state">State <span aria-hidden="true">*</span></label><select id="state" name="state" autocomplete="address-level1" required>
+                    <option value="">Select your state</option>
+                    <option value="Abia">Abia</option><option value="Adamawa">Adamawa</option><option value="Akwa Ibom">Akwa Ibom</option><option value="Anambra">Anambra</option><option value="Bauchi">Bauchi</option><option value="Bayelsa">Bayelsa</option><option value="Benue">Benue</option><option value="Borno">Borno</option><option value="Cross River">Cross River</option><option value="Delta">Delta</option><option value="Ebonyi">Ebonyi</option><option value="Edo">Edo</option><option value="Ekiti">Ekiti</option><option value="Enugu">Enugu</option><option value="Gombe">Gombe</option><option value="Imo">Imo</option><option value="Jigawa">Jigawa</option><option value="Kaduna">Kaduna</option><option value="Kano">Kano</option><option value="Katsina">Katsina</option><option value="Kebbi">Kebbi</option><option value="Kogi">Kogi</option><option value="Kwara">Kwara</option><option value="Lagos">Lagos</option><option value="Nasarawa">Nasarawa</option><option value="Niger">Niger</option><option value="Ogun">Ogun</option><option value="Ondo">Ondo</option><option value="Osun">Osun</option><option value="Oyo">Oyo</option><option value="Plateau">Plateau</option><option value="Rivers">Rivers</option><option value="Sokoto">Sokoto</option><option value="Taraba">Taraba</option><option value="Yobe">Yobe</option><option value="Zamfara">Zamfara</option><option value="Federal Capital Territory">Federal Capital Territory (FCT)</option>
+                </select></div>
+                <div class="checkout-field checkout-field--wide"><label for="instructions">Delivery instructions <em>Optional</em></label><textarea id="instructions" name="instructions" rows="3" placeholder="Landmark, preferred delivery time, or anything else that helps."></textarea></div>
+
+                <fieldset class="payment-options">
+                    <legend>Payment method <span aria-hidden="true">*</span></legend>
+                    <label class="payment-option">
+                        <input type="radio" name="paymentMethod" value="card" required>
+                        <span class="payment-option-icon" aria-hidden="true">▣</span>
+                        <span><strong>Card</strong><small>Pay securely with your debit or credit card.</small></span>
+                        <span class="payment-radio" aria-hidden="true"></span>
+                    </label>
+                    <label class="payment-option">
+                        <input type="radio" name="paymentMethod" value="bank-transfer">
+                        <span class="payment-option-icon" aria-hidden="true">⇄</span>
+                        <span><strong>Bank transfer</strong><small>Complete your payment directly from your bank.</small></span>
+                        <span class="payment-radio" aria-hidden="true"></span>
+                    </label>
+                    <label class="payment-option">
+                        <input type="radio" name="paymentMethod" value="cash">
+                        <span class="payment-option-icon" aria-hidden="true">₦</span>
+                        <span><strong>Cash on delivery</strong><small>Pay when your order arrives at your door.</small></span>
+                        <span class="payment-radio" aria-hidden="true"></span>
+                    </label>
+                </fieldset>
+
+                <aside class="demo-notice" aria-label="Demo payment notice">
+                    <span aria-hidden="true">✦</span>
+                    <p><strong>Demo payment</strong>This is a portfolio demonstration. No real payment will be processed.</p>
+                </aside>
+                <button type="submit" class="checkout-submit">Place demo order <span aria-hidden="true">→</span></button>
+                <p class="checkout-security"><span aria-hidden="true">⌁</span> Your delivery and payment details are securely handled for this demo.</p>
+                <a class="checkout-bottom-back" href="/">← Continue shopping</a>
+            </form>
+        </section>
+    </main>
+</body>
+</html>
