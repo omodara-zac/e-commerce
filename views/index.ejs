@@ -96,6 +96,16 @@
                 Added to cart
             </div>
 
+            <% if (orderConfirmation) { %>
+                <div id="order-confirmation" class="order-confirmation" role="status" aria-live="polite" aria-atomic="true">
+                    <i class="bi bi-bag-check-fill" aria-hidden="true"></i>
+                    <div>
+                        <strong>Order placed successfully</strong>
+                        <span><%= orderConfirmation.message %></span>
+                    </div>
+                </div>
+            <% } %>
+
 
 
             <script>
@@ -109,6 +119,12 @@
                     cartToastTimeout = setTimeout(() => {
                         cartToast.classList.remove("is-visible");
                     }, 2600);
+                }
+
+                const orderConfirmation = document.getElementById("order-confirmation");
+                if (orderConfirmation) {
+                    requestAnimationFrame(() => orderConfirmation.classList.add("is-visible"));
+                    setTimeout(() => orderConfirmation.classList.remove("is-visible"), 5000);
                 }
 
                 document.querySelectorAll(".increase-btn").forEach(button => {

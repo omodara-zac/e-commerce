@@ -34,13 +34,22 @@ app.use((req, res, next) => {
   next();
 });
 
+function requireAuthentication(req, res, next) {
+  if (req.isAuthenticated()) {
+    return next();
+  }
+
+  res.redirect("/login");
+}
+
 const db = new pg.Client({
-  user: process.env.PG_USER,
-  host: process.env.PG_HOST,
-  database: process.env.PG_DATABASE,
-  password: process.env.PG_PASSWORD,
-  port: process.env.PG_PORT,
+  connectionString: process.env.DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: false
+  }
 });
+
+console.log("DATABASE URL loaded:", !!process.env.DATABASE_URL);
 db.connect();
 
 app.get("/register", (req, res) => {
@@ -209,6 +218,9 @@ app.get("/logout", (req, res, next) => {
 
 app.get("/", (req, res) => {
 
+  const orderConfirmation = req.session.orderConfirmation;
+  delete req.session.orderConfirmation;
+
   db.query("SELECT * FROM products", (err, productResult) => {
 
     if (err) {
@@ -240,7 +252,8 @@ app.get("/", (req, res) => {
 
       res.render("index.ejs", {
         products: products,
-        cartItems: cartItems
+        cartItems: cartItems,
+        orderConfirmation
       });
     });
   });
@@ -292,11 +305,11 @@ app.post("/cart/delete", (req, res) => {
     }
   );
 });
-app.get("/checkout", (req, res) => {
+app.get("/checkout", requireAuthentication, (req, res) => {
   res.render("checkout.ejs");
 });
 
-app.post("/checkout", async (req, res) => {
+app.post("/checkout", requireAuthentication, async (req, res) => {
 
   const { name, phone, address, city, state, paymentMethod } = req.body;
 
@@ -364,8 +377,19 @@ app.post("/checkout", async (req, res) => {
     // 5. Clear cart
     await db.query("DELETE FROM cart_items");
 
-    // 6. Success
-    res.redirect("/");
+    // 6. Show a one-time confirmation after returning to the homepage
+    req.session.orderConfirmation = {
+      orderId,
+      message: "Your order has been placed successfully. Thank you for shopping with us."
+    };
+    req.session.save((sessionError) => {
+      if (sessionError) {
+        console.error(sessionError);
+        return res.status(500).send("Something went wrong");
+      }
+
+      res.redirect("/");
+    });
 
   } catch (err) {
 
