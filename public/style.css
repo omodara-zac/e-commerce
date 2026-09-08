@@ -505,7 +505,7 @@
     }
 
     .cart-container {
-        width: min(350px, 100%);
+        width: min(230px, 85vw);
     }
 }
 
