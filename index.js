@@ -96,7 +96,7 @@ app.post("/register", async (req, res) => {
     ]);
 
     if (checkResult.rows.length > 0) {
-      res.render("register.ejs", { errorMessage: "Email already exists. Try logging in." });
+      res.render("register.ejs", { errorMessage: "Email already exists." });
     } else {
       //hashing the password and saving it in the database
       bcrypt.hash(password, saltRounds, async (err, hash) => {
