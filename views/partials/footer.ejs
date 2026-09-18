@@ -1,0 +1,20 @@
+<footer class="site-footer">
+  <div class="site-footer__inner">
+    <div class="site-footer__brand">
+      <a href="/" class="site-footer__logo">e-boutique</a>
+      <p>Thoughtfully chosen pieces for your everyday wardrobe.</p>
+    </div>
+    <nav class="site-footer__links" aria-label="Footer navigation">
+      <a href="/">Shop</a>
+      <a href="/checkout">Checkout</a>
+      <% if (isAuthenticated) { %>
+        <a href="/logout">Log out</a>
+      <% } else { %>
+        <a href="/login">Sign in</a>
+        <a href="/register">Create account</a>
+      <% } %>
+    </nav>
+    <a class="site-footer__contact" href="mailto:hello@e-boutique.com"><span>Need a hand?</span>hello@e-boutique.com <span aria-hidden="true">↗</span></a>
+  </div>
+  <div class="site-footer__bottom"><span>© 2026 e-boutique</span><span>Made for good finds.</span></div>
+</footer>

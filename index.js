@@ -220,8 +220,13 @@ app.get("/", (req, res) => {
 
   const orderConfirmation = req.session.orderConfirmation;
   delete req.session.orderConfirmation;
+  const searchQuery = typeof req.query.search === "string" ? req.query.search.trim() : "";
+  const productQuery = searchQuery
+    ? "SELECT * FROM products WHERE name ILIKE $1 ORDER BY name"
+    : "SELECT * FROM products ORDER BY name";
+  const productQueryValues = searchQuery ? [`%${searchQuery}%`] : [];
 
-  db.query("SELECT * FROM products", (err, productResult) => {
+  db.query(productQuery, productQueryValues, (err, productResult) => {
 
     if (err) {
       console.error(err);
@@ -253,7 +258,8 @@ app.get("/", (req, res) => {
       res.render("index.ejs", {
         products: products,
         cartItems: cartItems,
-        orderConfirmation
+        orderConfirmation,
+        searchQuery
       });
     });
   });

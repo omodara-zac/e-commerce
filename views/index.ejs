@@ -26,7 +26,35 @@
         <%- include('partials/cart') %>
 
 
-            <div class="products-container">
+            <section class="shop-heading" aria-labelledby="shop-title">
+                <div>
+                    <p class="shop-heading__eyebrow">THE COLLECTION</p>
+                    <h1 id="shop-title">Find your next favorite piece.</h1>
+                    <% if (searchQuery) { %>
+                        <p class="shop-heading__result">Showing results for “<%= searchQuery %>”</p>
+                    <% } %>
+                </div>
+                <form class="product-search" action="/" method="GET" role="search">
+                    <label class="visually-hidden" for="product-search-input">Search products by name</label>
+                    <i class="bi bi-search" aria-hidden="true"></i>
+                    <input id="product-search-input" type="search" name="search" value="<%= searchQuery %>" placeholder="Search by product name" autocomplete="off">
+                    <% if (searchQuery) { %>
+                        <a href="/" class="product-search__clear" aria-label="Clear search">Clear</a>
+                    <% } %>
+                    <button type="submit">Search</button>
+                </form>
+            </section>
+
+            <% if (products.length === 0) { %>
+                <section class="empty-search" aria-live="polite">
+                    <i class="bi bi-search" aria-hidden="true"></i>
+                    <h2>No products found</h2>
+                    <p>We couldn’t find a product named “<%= searchQuery %>”. Try another search.</p>
+                    <a href="/">View all products</a>
+                </section>
+            <% } %>
+
+            <div class="products-container" <%= products.length === 0 ? 'hidden' : '' %>>
 
                 <% products.forEach(product=> { %>
 
@@ -105,6 +133,8 @@
                     </div>
                 </div>
             <% } %>
+
+            <%- include('partials/footer') %>
 
 
 
@@ -195,6 +225,20 @@
                         showCartToast();
                     });
                 });
+
+                const productCards = document.querySelectorAll(".product-card");
+                if ("IntersectionObserver" in window) {
+                    const revealProducts = new IntersectionObserver((entries, observer) => {
+                        entries.forEach(entry => {
+                            if (!entry.isIntersecting) return;
+                            entry.target.classList.add("is-visible");
+                            observer.unobserve(entry.target);
+                        });
+                    }, { threshold: 0.12 });
+                    productCards.forEach(card => revealProducts.observe(card));
+                } else {
+                    productCards.forEach(card => card.classList.add("is-visible"));
+                }
 
             </script>
 
