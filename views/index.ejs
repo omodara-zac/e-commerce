@@ -213,6 +213,7 @@
                         const item = document.createElement("div");
                         item.className = "cart-item";
                         item.dataset.cartId = cartItem.id;
+                        item.dataset.cartTotal = totalPrice;
                         item.innerHTML = `<img src="${productImage}" alt=""><div><h5></h5><p></p><p></p><div class="price-delete"><p></p><form class="delete-cart-form" data-url="/cart/delete"><input type="hidden" name="cart_id"><button type="submit" class="delete-cart-btn" title="Remove from cart"><i class="bi bi-trash3"></i></button></form></div></div>`;
                         item.querySelector("h5").textContent = productName;
                         item.querySelectorAll("p")[0].textContent = `Size: ${cartItem.size}`;
@@ -222,6 +223,7 @@
                         cartItems.appendChild(item);
                         cartCount.textContent = Number(cartCount.textContent) + 1;
                         document.getElementById("empty-cart-message").hidden = true;
+                        updateCartSubtotal();
                         showCartToast();
                     });
                 });

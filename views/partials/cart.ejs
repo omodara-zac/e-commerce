@@ -10,6 +10,7 @@
 
 <!-- Cart sidebar -->
 <div class="cart-container" id="cart">
+    <% const cartSubtotal = cartItems.reduce((total, item) => total + (Number(item.price) * Number(item.quantity)), 0); %>
 
     <button id="close-cart" class="btn btn-danger" type="button">
         ×
@@ -21,7 +22,7 @@
     <div id="cart-items">
     <% cartItems.forEach(item => { %>
 
-        <div class="cart-item" data-cart-id="<%= item.id %>">
+        <div class="cart-item" data-cart-id="<%= item.id %>" data-cart-total="<%= Number(item.price) * Number(item.quantity) %>">
 
             <img src="<%= item.image_url %>" alt="<%= item.name %>">
 
@@ -71,6 +72,11 @@
     </div>
 
 
+    <div class="cart-subtotal" aria-live="polite">
+        <span>Subtotal</span>
+        <strong id="cart-subtotal-value">₦<%= cartSubtotal.toLocaleString() %></strong>
+    </div>
+
     <!-- Checkout button -->
     <button type="button" class="checkout-btn">
        <a href="/checkout" style="text-decoration: none; color: white;">Checkout</a>
@@ -94,6 +100,12 @@
         cartBtn.style.display = "block";
     });
 
+    function updateCartSubtotal() {
+        const subtotal = Array.from(document.querySelectorAll("#cart-items .cart-item"))
+            .reduce((total, item) => total + Number(item.dataset.cartTotal || 0), 0);
+        document.getElementById("cart-subtotal-value").textContent = `₦${subtotal.toLocaleString()}`;
+    }
+
     document.addEventListener("submit", async (event) => {
         const form = event.target.closest(".delete-cart-form");
         if (!form) return;
@@ -112,5 +124,6 @@
         cartCount.textContent = Math.max(0, Number(cartCount.textContent) - 1);
         document.getElementById("empty-cart-message").hidden =
             document.querySelectorAll("#cart-items .cart-item").length > 0;
+        updateCartSubtotal();
     });
 </script>

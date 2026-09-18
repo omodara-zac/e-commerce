@@ -367,6 +367,25 @@
     text-align: center;
 }
 
+.cart-subtotal {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 18px;
+    padding: 16px 0;
+    border-top: 1px solid #e1e5e1;
+    color: #5e685f;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.cart-subtotal strong {
+    color: #1b211c;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 18px;
+    letter-spacing: -.04em;
+}
+
 
 /* Cart image */
 
